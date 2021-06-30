@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body>
+    <h1>Weather</h1>
+    <div class="container">
+        <div id="content">
+            <div id="viewContent">
+                <h4>Select the City for the getting the Weather Report</h4>
+                <select id="citySelect">
+                    <option value="Select">Select</option>
+                    <optgroup label="Asia">
+                    <option value="Delhi">Delhi</option>
+                    <option value="Tokyo">Tokyo</option>
+                    <option value="Jakarta">Jakarta</option>
+                    </optgroup>
+                    <optgroup label="North America">
+                    <option value="Mexico,MX">Mexico</option>
+                    <option value="New York City,US">New York</option>
+                    <option value="Miami">Miami</option>
+                    </optgroup>
+                    <optgroup label="South America">
+                    <option value="Sao Paulo,Brazil">Sao Paulo</option>
+                    <option value="Lima">Lima</option>
+                    <option value="Bogota">Bogota</option>
+                    </optgroup>
+                    <optgroup label="Europe">
+                    <option value="Moscow">Moscow</option>
+                    <option value="London">London</option>
+                    <option value="Barcelona">Barcelona</option>
+                    </optgroup>
+                    <optgroup label="Africa">
+                    <option value="Lagos">Lagos</option>
+                    <option value="Cairo">Cairo</option>
+                    <option value="Algiers">Algiers</option>
+                    </optgroup>
+                    <optgroup label="ROW">
+                    <option value="Sydney">Sydney</option>
+                    <option value="Melbourne,AU">Melbourne</option>
+                    <option value="Antarctica">Antarctica</option>
+
+                </select>
+                <button id="submit">Submit</button>
+                <div id="message"></div>
+            </div>
+        </div>
+    </div>
+    <style>
+        body {
+            background: linear-gradient(-45deg,orange,cyan,blue);
+            animation: gradient 10s ease infinite;
+            background-size: 2000px 2000px;
+        }
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+ h1 {
+    display: inline;
+    position: relative;
+    text-align: center;
+    padding-left: 450px;
+    font: 130px Helvetica;
+    letter-spacing: -5px;
+    color: red; 
+}
+
+
+        
+
+        
+
+        .container {
+            width: 600px;
+            margin: auto;
+            color: black;
+            font-size: 25px;
+        }
+
+            .container #content {
+                border:  2px black;
+                padding: 10px;
+            }
+
+
+
+        #viewContent {
+            padding-left: 20px;
+        }
+
+            #viewContent select{
+                color: black;
+                font-size: 20px;
+                border-color: darkcyan;
+                background-color: darkcyan;
+            }
+            #viewContent button {
+                color: black;
+                font-size: 20px;
+                border-color: black;
+                background-color: red;
+            }
+
+            #viewContent h4 {
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            #viewContent .textAlignCenter {
+                text-align: center;
+            }
+
+                #viewContent .textAlignCenter img {
+                    display: none;
+                    width: 50px;
+                }
+
+            #viewContent #message table {
+                width: 100%;
+
+            }
+
+                #viewContent #message table th {
+                    text-align: left;
+                    font-family: serif;
+                    font-weight: bolder;
+
+                }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#reset").click(function (e) {
+                $("#citySelect").val("Select")
+                $("#message").html("")
+            });
+
+            $("#submit").click(function (e) {
+                var validate = Validate();
+                $("#message").html(validate);
+                if (validate.length == 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://api.openweathermap.org/data/2.5/weather?q=" + $("#citySelect").val() + "&appid=e48eb5f8eb88f96c78a24f6f9b7cd180&units=metric",
+                        dataType: "json",
+                        success: function (result, status, xhr) {
+                            var table = $("<table><tr><th>Weather Description</th></tr>");
+
+                            table.append("<tr><td>City:</td><td>" + result["name"] + "</td></tr>");
+                            table.append("<tr><td>Country:</td><td>" + result["sys"]["country"] + "</td></tr>");
+                            table.append("<tr><td>Current Temperature:</td><td>" + result["main"]["temp"] + "°C</td></tr>");
+                            table.append("<tr><td>Humidity:</td><td>" + result["main"]["humidity"] + "%</td></tr>");
+                            table.append("<tr><td>Weather:</td><td>" + result["weather"][0]["main"] + "</td></tr>");
+                            table.append("<tr><td>Wind:</td><td>" + result["wind"]["speed"] + "mph</td></tr>");
+                            table.append("<tr><td>Pressure:</td><td>" + result["main"]["pressure"] + "hPa</td></tr>");
+
+
+                            $("#message").html(table);
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+                        }
+                    });
+                }
+            });
+
+            
+
+            function Validate() {
+                var errorMessage = "";
+                if ($("#citySelect").val() == "Select") {
+                    errorMessage += "► Select City";
+                }
+                return errorMessage;
+            }
+        });
+    </script>
+</body>
+</html>
