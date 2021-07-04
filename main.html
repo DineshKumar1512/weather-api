@@ -152,7 +152,7 @@
                 if (validate.length == 0) {
                     $.ajax({
                         type: "POST",
-                        url: "http://api.openweathermap.org/data/2.5/weather?q=" + $("#citySelect").val() + "&appid=e48eb5f8eb88f96c78a24f6f9b7cd180&units=metric",
+                        url: "http://api.openweathermap.org/data/2.5/weather?q=" + $("#citySelect").val() + "&appid=<api-id>&units=metric",
                         dataType: "json",
                         success: function (result, status, xhr) {
                             var table = $("<table><tr><th>Weather Description</th></tr>");
